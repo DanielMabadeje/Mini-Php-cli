@@ -4,13 +4,25 @@ namespace Minicli;
 
 class App
 {
-    public function runCommand(array $argv)
+    protected $printer;
+
+    public function __construct()
+    {
+        $this->printer = new CliPrinter();
+    }
+
+    public function getPrinter()
+    {
+        return $this->printer;
+    }
+
+    public function runCommand($argv)
     {
         $name = "World";
         if (isset($argv[1])) {
             $name = $argv[1];
         }
 
-        echo "Hello $name!!!\n";
+        $this->getPrinter()->display("Hello $name!!!");
     }
 }
