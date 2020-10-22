@@ -74,4 +74,16 @@ class App
             exit;
         }
     }
+
+
+    // public function handle()
+    // {
+    //     $this->getPrinter()->info("Starting Minicli...");
+    //     if (!$this->hasParam('message')) {
+    //         $this->getPrinter()->error("Error: you must provide a message.");
+    //         exit;
+    //     }
+
+    //     $this->getPrinter()->success($this->getParam('message'));
+    // }
 }
