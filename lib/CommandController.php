@@ -2,51 +2,57 @@
 
 namespace Minicli;
 
-class CommandNamespace
+abstract class CommandController
 {
-    protected $name;
+    protected $app;
 
-    protected $controllers = [];
+    protected $input;
 
-    public function __construct($name)
+    abstract public function handle();
+
+    public function boot(App $app)
     {
-        $this->name = $name;
+        $this->app = $app;
     }
 
-    public function getName()
+    public function run(CommandCall $input)
     {
-        return $this->name;
+        $this->input = $input;
+        $this->handle();
     }
 
-    public function loadControllers($commands_path)
+    public function teardown()
     {
-        foreach (glob($commands_path . '/' . $this->getName() . '/*Controller.php') as $controller_file) {
-            $this->loadCommandMap($controller_file);
-        }
-
-        return $this->getControllers();
+        //
     }
 
-    public function getControllers()
+    protected function getArgs()
     {
-        return $this->controllers;
+        return $this->input->args;
     }
 
-    public function getController($command_name)
+    protected function getParams()
     {
-        return isset($this->controllers[$command_name]) ? $this->controllers[$command_name] : null;
+        return $this->input->params;
     }
 
-    protected function loadCommandMap($controller_file)
+    protected function hasParam($param)
     {
-        $filename = basename($controller_file);
+        return $this->input->hasParam($param);
+    }
 
-        $controller_class = str_replace('.php', '', $filename);
-        $command_name = strtolower(str_replace('Controller', '', $controller_class));
-        $full_class_name = sprintf("App\\Command\\%s\\%s", $this->getName(), $controller_class);
+    protected function getParam($param)
+    {
+        return $this->input->getParam($param);
+    }
 
-        /** @var CommandController $controller */
-        $controller = new $full_class_name();
-        $this->controllers[$command_name] = $controller;
+    protected function getApp()
+    {
+        return $this->app;
+    }
+
+    protected function getPrinter()
+    {
+        return $this->getApp()->getPrinter();
     }
 }
