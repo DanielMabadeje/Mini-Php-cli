@@ -1,4 +1,3 @@
-contents of the updated App class:
 <?php
 
 namespace Minicli;
