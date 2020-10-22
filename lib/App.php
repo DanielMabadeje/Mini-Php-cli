@@ -6,6 +6,8 @@ class App
 {
     protected $printer;
 
+    protected $registry = [];
+
     public function __construct()
     {
         $this->printer = new CliPrinter();
@@ -16,13 +18,30 @@ class App
         return $this->printer;
     }
 
-    public function runCommand($argv)
+    public function registerCommand($name, $callable)
     {
-        $name = "World";
+        $this->registry[$name] = $callable;
+    }
+
+    public function getCommand($command)
+    {
+        return isset($this->registry[$command]) ? $this->registry[$command] : null;
+    }
+
+    public function runCommand(array $argv = [])
+    {
+        $command_name = "help";
+
         if (isset($argv[1])) {
-            $name = $argv[1];
+            $command_name = $argv[1];
         }
 
-        $this->getPrinter()->display("Hello $name!!!");
+        $command = $this->getCommand($command_name);
+        if ($command === null) {
+            $this->getPrinter()->display("ERROR: Command \"$command_name\" not found.");
+            exit;
+        }
+
+        call_user_func($command, $argv);
     }
 }
