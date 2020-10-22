@@ -4,7 +4,7 @@ namespace App\Command;
 
 use Minicli\CommandController;
 
-class NameController extends CommandController
+class HelloController extends CommandController
 {
     public function handle()
     {
